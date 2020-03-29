@@ -11,6 +11,8 @@ Implemented Features: (In Monitoring Entry Price/Cutloss/Target Price)
 
 -Email Notification
   
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  
 For Global Market and CryptoCurrencies - Ongoing Evaluation using AlphaVantage API
 
 -Monitoring Entry Price/Cutloss/Target Price
