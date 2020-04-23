@@ -30,7 +30,7 @@ object_cnt = 1  #change the value depends on below test object
 #### -----------------------Input Condition----------------------------------------
 
 ####    Input --> (stock_name,target price, cutloss price, entry price (in list, maxmin), mailing list)
-####    start_function('BDO',TP=160,CL=150,EP=[155,156],mail_name=mailing_list['1'])
+start_function('BDO',TP=160,CL=150,EP=[155,156],mail_name=mailing_list['1'])
 
 
 
