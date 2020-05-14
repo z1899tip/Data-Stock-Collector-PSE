@@ -4,11 +4,11 @@ import datetime,time
 import random
 import subprocess
 import platform
-##import Smail_sender
+from Smail_sender import send_automail
 from Sms_Sender import sms_sender
  
 
-#https://www.alphavantage.co/  API:  L5LQB4N9GS1RTYVW
+
 
 
 class DataStockCollector(object):
@@ -213,7 +213,7 @@ class DataStockCollector(object):
                     status_result = 'Target'
                     # highest_price = "Today's Highest Price"
                     self.alarm(result_str,self.stock_name)
-                    # self.send_notification(result_str,status_result,self.target_price,self.high_val,self.update_time)
+                    self.send_mail(result_str,status_result,self.target_price,self.high_val,self.update_time)
                     self.send_sms(result_str,status_result,self.target_price,self.high_val,self.update_time)
                     return True
 
@@ -227,7 +227,7 @@ class DataStockCollector(object):
                         status_result = 'Cutloss Range'
                         # current_price = "Current Price"
                         self.alarm(result_str,self.stock_name)
-                        # self.send_notification(result_str,ent_price,self.entry,self.cur_val,self.update_time)
+                        self.send_mail(result_str,ent_price,self.cutloss,self.cur_val,self.update_time)
                         self.send_sms(result_str,status_result,self.cutloss,self.cur_val,self.update_time)
                         return True
                     else:
@@ -238,14 +238,14 @@ class DataStockCollector(object):
                     if self.cutloss[0] >=self.low_val:
                         result_str = 'Your Cutloss was Hit!'
                         status_result = 'Cutloss'
-                        lowest_price = "Today's Lowest Price"
+                        # lowest_price = "Today's Lowest Price"
                         self.alarm(result_str,self.stock_name)
-                        # self.send_notification(result_str,c_loss,self.cutloss,self.low_val,lowest_price)
+                        self.send_mail(result_str,status_result,self.cutloss,self.cur_val,self.update_time)
                         self.send_sms(result_str,status_result,self.cutloss,self.cur_val,self.update_time)
                         return True
 
                 else:
-                    print('[Warning!] Cutloss was not set properly.Input must not exceed 2 digits.')
+                    raise AssertionError('[Warning!] Cutloss was not set properly.Input must not exceed 2 digits.')
                     return False
 
 
@@ -255,9 +255,9 @@ class DataStockCollector(object):
                         if (max(self.entry) >=self.cur_val) and (min(self.entry) <=self.cur_val):
                             result_str = 'Your Entry Price was Hit!'
                             status_result = 'Entry Range'
-                            current_price = "Current Price"
+                            # current_price = "Current Price"
                             self.alarm(result_str,self.stock_name)
-                            # self.send_notification(result_str,status_result,self.entry,self.cur_val,current_price)
+                            self.send_mail(result_str,status_result,self.entry,self.cur_val,self.update_time)
                             self.send_sms(result_str,status_result,self.entry,self.cur_val,self.update_time)
                             return True
                         else:
@@ -272,13 +272,13 @@ class DataStockCollector(object):
                 return False
 
 
-    def send_notification(self,result_str,status_result,set_price,current_val,update_time):
-        Smail_sender.send_automail(self.mail_name,self.stock_name,result_str,status_result,set_price,self.cur_val,update_time)
+    def send_mail(self,result_str,status_result,set_price,current_val,update_time):
+        #Note: Variable current_val is reserved for future display.
+        send_automail(self.mail_name,self.stock_name,result_str,status_result,set_price,current_val,update_time)
 
 
     def send_sms(self,result_str,status_result,set_price,current_val,update_time):
         sms_sender(self.stock_name,result_str,status_result,set_price,current_val,update_time)
-        print('Message Sent!')
 
 
     def alarm(self,sp,my_stock):
@@ -289,7 +289,6 @@ class DataStockCollector(object):
                 subprocess.call(['spd-say', 'Alert! Stock name {}: {}'.format(my_stock,sp)])
                 time.sleep(5)
 
-                #text to speech in linux (Not yet tested.)
         elif op_system == 'Windows':
             for _ in range(3):
                 subprocess.call(['PowerShell -Command "Add-Type –AssemblyName System.Speech; (New-Object System.Speech.Synthesis.SpeechSynthesizer).Speak("Alert! Stock name {}: {}");'.format(my_stock,sp)])

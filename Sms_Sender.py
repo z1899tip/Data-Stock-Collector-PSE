@@ -1,34 +1,37 @@
 from twilio.rest import Client
-# import os
-# import requests
+import os
 
-#Ragnasav21@gmail.com
-account_sid = 'AC1fd746fac0383ef6f7275985eb6a6444'
-auth_token = '0a98c0a52b0882d31d457e9356a0525d'
-From= "+12039042250"
+#Need to replace all None with Twilio generated account.
+account_sid = None 
+auth_token = None
+From = None
+To = None
 
-#Sypdy0521@gmail.com
-# account_sid = 'ACb11b941dee36537066a2671b3d3c3d3e'
-# auth_token = '773bc8ea7efc8c341d7bb3c0530b44ff'
-# From = "+12052559450"
-
-
-# (stock_name=None,result_str=None,status_result=None,set_price=None,current_value=None,Update_time=None)
+if None in (account_sid,auth_token,From,To):
+	try:
+		from Credential import my_twilio_credential
+		account_sid,auth_token,From,To = my_twilio_credential()
+	except ImportError as Ie:
+		print(Ie, 'This module is for my personal use to hide all my twilio credentials.')
+		print("Please create your twilio account and fill up above variable with your account_sid, auth_token and twilio generated phone number.")
+		os.abort()
 
 def sms_sender(stock_name,result_str,status_result,set_price,current_value,Update_time):
 # def sms_sender():	
 	From_= From
-	To = "+639291267700"
+	To_ = To 
 	# To = "+639998997173"
 
 	body = f"""
-	{stock_name} as of {Update_time}
+	Stock Name: {stock_name} 
 	{result_str}! 
 	Current Value: {current_value}
 	{status_result}: {set_price}
-
+	as of {Update_time}
 
 	"""
 
 	client = Client(account_sid,auth_token)
-	message = client.messages.create(body=body,from_= From_ ,to=To)
+	message = client.messages.create(body=body,from_= From_ ,to=To_)
+
+

@@ -1,38 +1,41 @@
-#!/usr/bin/python
 
 import os
-
 import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.utils import formataddr
+from email.header import Header
 
-import email
 
- 
+def send_automail(mail_name,stock_name,result_str,status_result,set_price,cur_val,update_time):
 
-def send_automail(mail_name,stock_name,res,stat_res,set_price,cur_val,update_time):
+    #send via Gmail, replace None to your user and password
 
- 
+    user = None  
+    password = None
 
-    sender = 'stephenangelo.villanueva@toshiba.co.jp'
+    if None in (user,password):
+      try:
+        from Credential import email_credential
+        user,password = email_credential()
+      except ImportError as Ie:
+        print("Please replace the None value in user and password variable to your gmail Credential")
+        os.abort()
 
-    receiver = [mail_name]
 
- 
+    sender = user
+    receiver = mail_name
 
-    message = """From: <Databot@toshiba.co.jp>
+    mail = MIMEMultipart('alternative')
+    mail['Subject'] = "Notification (Stock Name: {})".format(stock_name)
+    mail['From'] = formataddr((str(Header('StockBot','utf-8')),sender))
+    mail['To'] = ', '.join(receiver)
 
-To:<{}>
+    message = """
 
-MIME-Version: 1.0
+</style>
 
-Content-type: text/html
-
-Subject: Notification (Stock Name: {})
-
- 
-
-    </style>
-
-    <!--[if gte mso 9]><xml>
+<!--[if gte mso 9]><xml>
 
 <o:shapedefaults v:ext="edit" spidmax="1026" />
 
@@ -114,16 +117,6 @@ Subject: Notification (Stock Name: {})
 
    <p class="MsoNormal">
 
-    {} : {}
-
-    <o:p>
-
-    </o:p>
-
-   </p>  
-
-   <p class="MsoNormal">
-
     Current Value: {} As of {}
 
     <o:p>
@@ -152,11 +145,29 @@ Subject: Notification (Stock Name: {})
 </body>
 </html>
 
-""".format(mail_name,stock_name,stock_name,res,stat_res,set_price,price_str,max_min_price,cur_val,update_time)
+""".format(stock_name,result_str,status_result,set_price,cur_val,update_time)
 
-    host_f = "172.25.128.94"
-    port_f = 25
-    smtpObj = smtplib.SMTP()
-    smtpObj.connect(host_f,port_f)       
-    smtpObj.sendmail(sender, receiver, message)
+
+#send via Gmail
+    
+    user = None
+    password = None
+
+    if None in (user,password):
+      try:
+        from Credential import email_credential
+        user,password = email_credential()
+      except ImportError as Ie:
+        print("Please change the None value to your gmail Credential")
+
+    html_in = MIMEText(message,'html')
+    mail.attach(html_in)
+
+    smtpObj = smtplib.SMTP('smtp.gmail.com', 587)
+    smtpObj.ehlo()
+    smtpObj.starttls()
+    smtpObj.login(user,password)     
+    smtpObj.sendmail(sender, receiver, mail.as_string())
+    smtpObj.quit()
     print ("Message Sent!")
+
