@@ -3,6 +3,7 @@ import datetime
 from logger import logger_func
 
 
+
 @logger_func
 def start_function(stock_name,TP=None,CL=None,EP = None,mail_name = None,glob_market_con=False,indicator=None):
 
@@ -13,21 +14,23 @@ def start_function(stock_name,TP=None,CL=None,EP = None,mail_name = None,glob_ma
     # obj.delays
     return res
 
-#Declared variables
 
 
 try:
     from Credential import mail_list
     mailing_list = mail_list()
 except ImportError as Ie:
+
+    #Need user replacement {1:youremail@gmail.com}
+
     mailing_list = {
-    1:'receiver@gmail.com',
+    1:None,
     2:None,
     3:None}
 
 mail_list = [mailing_list[i] for i in mailing_list.keys()]
 
-#Please replace None value with receiver address
+
 
 
 
@@ -39,15 +42,17 @@ object_cnt = 1  #change the value depends on below test object
 #### -----------------------Input Condition----------------------------------------
 
 ####    Input --> (stock_name,target price, cutloss price, entry price (in list, maxmin), mailing list)
-start_function('BDO',TP=160,CL=150,EP=[155,156],mail_name=mail_list)
+# start_function('BDO',TP=160,CL=150,EP=[155,156],mail_name=mail_list)
 
 
-# while(t != '12:00' and t!='15:30'):
-# while(t != '01:30'): #new schedule
+
 # ##---------------------------Test Object--------------------------------------------
+# while(t != '12:00' and t!='15:30'):
+while(t != '01:30'): #new schedule
 
-    # if (trigger[0] == False):
-    #     trigger[0] = start_function('SMPH',CL=28.5,mail_name=mail_list)
+
+    if (trigger[0] == False):
+        trigger[0] = start_function('TECH',EP=[7.96,8.2],mail_name=mail_list)
 
 
     # if (trigger[1] == False):
@@ -67,10 +72,10 @@ start_function('BDO',TP=160,CL=150,EP=[155,156],mail_name=mail_list)
     #     trigger[4] = start_function('AXLM',CL=2.78,mail_name=mailing_list['1'])
 # ####---------------------------------------------------------------------------------
 
-    # if (sum(trigger)== object_cnt):
-    #     break
+    if (sum(trigger)== object_cnt):
+        break
 
-    # epoch +=1
-    # print('Cycle:',epoch)
+    epoch +=1
+    print('Cycle:',epoch)
 
 print('Now Closing....')

@@ -17,10 +17,9 @@ if None in (account_sid,auth_token,From,To):
 		os.abort()
 
 def sms_sender(stock_name,result_str,status_result,set_price,current_value,Update_time):
-# def sms_sender():	
 	From_= From
 	To_ = To 
-	# To = "+639998997173"
+
 
 	body = f"""
 	Stock Name: {stock_name} 

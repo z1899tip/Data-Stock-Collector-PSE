@@ -227,7 +227,7 @@ class DataStockCollector(object):
                         status_result = 'Cutloss Range'
                         # current_price = "Current Price"
                         self.alarm(result_str,self.stock_name)
-                        self.send_mail(result_str,ent_price,self.cutloss,self.cur_val,self.update_time)
+                        self.send_mail(result_str,status_result,self.cutloss,self.cur_val,self.update_time)
                         self.send_sms(result_str,status_result,self.cutloss,self.cur_val,self.update_time)
                         return True
                     else:
